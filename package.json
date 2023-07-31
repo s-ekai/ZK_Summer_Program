@@ -1,0 +1,22 @@
+{
+  "name": "zk_summer_program",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-ekai/ZK_Summer_Program.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/s-ekai/ZK_Summer_Program/issues"
+  },
+  "homepage": "https://github.com/s-ekai/ZK_Summer_Program#readme",
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  }
+}
