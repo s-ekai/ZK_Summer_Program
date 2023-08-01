@@ -18,5 +18,10 @@
   "homepage": "https://github.com/s-ekai/ZK_Summer_Program#readme",
   "devDependencies": {
     "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "ffjavascript": "^0.2.59",
+    "merkletreejs": "^0.3.10",
+    "poseidon-encryption": "^1.0.2"
   }
 }
