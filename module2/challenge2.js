@@ -19,6 +19,6 @@ console.log(hash2)
 
 // Poseidon
 const inputs = [1, 2, 3, 4];
-// TODO: Compute the Poseidon hash of the inputs and print it. Remember that Poseidon accepts an array of integers as input
+// INFO: Compute the Poseidon hash of the inputs and print it. Remember that Poseidon accepts an array of integers as input
 const res = poseidon.poseidon(inputs).toString(16)
 console.log(res)
