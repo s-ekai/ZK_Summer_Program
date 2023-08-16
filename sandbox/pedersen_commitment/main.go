@@ -108,6 +108,7 @@ func articleExample() {
 
 	//TxOUT3, a.k.a the TxOUT for the fee, (a=2, r=83): 83*G, 2*H
 	//the 83 is calculated in the following as the diff between input and output G
+	// TODO: この段階ですでにrを計算するために、rの値がinputとoutputで正しいように計算しているがそれは良いのか？
 	r_total_i := suite.Scalar().Add(r_i1, r_i2)
 	r_total_i = suite.Scalar().Add(r_total_i, r_i3)
 	r_total_o := suite.Scalar().Add(r_o1, r_o2)
@@ -142,6 +143,7 @@ func articleExample() {
 	zG := suite.Point().Mul(r_z, G)
 	zH := suite.Point().Mul(a_z, H)
 	c_z := suite.Point().Add(zG, zH)
+	// TODO: これは無限遠点の足し算になる？だとしたらどうして出力値が0100000000000000000000000000000000000000000000000000000000000000になる？
 	fmt.Printf("c_z: %s\n", c_z)
 	//some more prints to check how point subtraction works, if interested
 	//fmt.Printf("zero: %s\n", suite.Point().Sub(zG, zG))
