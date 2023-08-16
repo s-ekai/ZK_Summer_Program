@@ -42,11 +42,11 @@ describe("HelloWorld", function () {
         const { proof, publicSignals } = await groth16.fullProve({"a":"2","b":"3"}, "contracts/circuits/HelloWorld/HelloWorld_js/HelloWorld.wasm","contracts/circuits/HelloWorld/circuit_final.zkey");
 
         console.log('2x3 =',publicSignals[0]);
-        
+
         const calldata = await groth16.exportSolidityCallData(proof, publicSignals);
-    
+
         const argv = calldata.replace(/["[\]\s]/g, "").split(',').map(x => BigInt(x).toString());
-    
+
         const a = [argv[0], argv[1]];
         const b = [[argv[2], argv[3]], [argv[4], argv[5]]];
         const c = [argv[6], argv[7]];
@@ -68,6 +68,9 @@ describe("Multiplier3 with Groth16", function () {
 
     beforeEach(async function () {
         //[assignment] insert your script here
+        Verifier = await ethers.getContractFactory("HelloWorldVerifier");
+        verifier = await Verifier.deploy();
+        await verifier.deployed();
     });
 
     it("Circuit should multiply three numbers correctly", async function () {
@@ -93,7 +96,7 @@ describe("Multiplier3 with PLONK", function () {
     it("Should return true for correct proof", async function () {
         //[assignment] insert your script here
     });
-    
+
     it("Should return false for invalid proof", async function () {
         //[assignment] insert your script here
     });
