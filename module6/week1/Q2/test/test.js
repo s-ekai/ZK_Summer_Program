@@ -15,12 +15,14 @@ describe("HelloWorld", function () {
     let verifier;
 
     beforeEach(async function () {
+        // verifierの定義
         Verifier = await ethers.getContractFactory("HelloWorldVerifier");
         verifier = await Verifier.deploy();
         await verifier.deployed();
     });
 
     it("Circuit should multiply two numbers correctly", async function () {
+        // circomの読み込み
         const circuit = await wasm_tester("contracts/circuits/HelloWorld.circom");
 
         const INPUT = {
@@ -28,10 +30,12 @@ describe("HelloWorld", function () {
             "b": 3
         }
 
+        // witnessの作成
         const witness = await circuit.calculateWitness(INPUT, true);
 
         //console.log(witness);
 
+        // witnessが正しく定義できていることを確認
         assert(Fr.eq(Fr.e(witness[0]),Fr.e(1)));
         assert(Fr.eq(Fr.e(witness[1]),Fr.e(6)));
 
@@ -39,23 +43,29 @@ describe("HelloWorld", function () {
 
     it("Should return true for correct proof", async function () {
         //[assignment] Add comments to explain what each line is doing
+        // inputが何か、circomの指定、trusted setupの値を使ってproofを生成
         const { proof, publicSignals } = await groth16.fullProve({"a":"2","b":"3"}, "contracts/circuits/HelloWorld/HelloWorld_js/HelloWorld.wasm","contracts/circuits/HelloWorld/circuit_final.zkey");
 
         console.log('2x3 =',publicSignals[0]);
 
+        // solidityのデータとして解釈
         const calldata = await groth16.exportSolidityCallData(proof, publicSignals);
+
 
         const argv = calldata.replace(/["[\]\s]/g, "").split(',').map(x => BigInt(x).toString());
 
         // function verifyProof(uint[2] calldata _pA, uint[2][2] calldata _pB, uint[2] calldata _pC, uint[1] calldata _pubSignals) public view returns (bool) {
+        // solidityの形式に合わせて変更
         const a = [argv[0], argv[1]];
         const b = [[argv[2], argv[3]], [argv[4], argv[5]]];
         const c = [argv[6], argv[7]];
         const Input = argv.slice(8);
 
+        // proofが正しいことの確認
         expect(await verifier.verifyProof(a, b, c, Input)).to.be.true;
     });
     it("Should return false for invalid proof", async function () {
+        // 間違ったproofだとうまくいかないことを確認
         let a = [0, 0];
         let b = [[0, 0], [0, 0]];
         let c = [0, 0];
