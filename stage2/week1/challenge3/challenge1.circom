@@ -8,7 +8,6 @@
 
 
 include "circomlib/poseidon.circom";
-// include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
 
 template Rearrange() {
     signal input num;
@@ -33,7 +32,7 @@ template GenerateSecret() {
     poseidon.inputs[0] <== password;
     poseidon.inputs[1] <== nullifier;
 
-    out <== poseidon.out;
+    secret <== poseidon.out;
 }
 
 // INFO: secretからcommientを作成する。
@@ -41,8 +40,8 @@ template GenerateCommitment() {
     signal input secret;
     signal output commitment;
     component poseidon = Poseidon(1);
-    poseidon.inputs[0] = secret;
-    poseidon.out <== commitment;
+    poseidon.inputs[0] <== secret;
+    commitment <== poseidon.out;
 }
 
 // INFO: nullifierからnulliferHashを作成する。
@@ -95,9 +94,8 @@ template Withdraw(n) {
     signal input nullifier;
     signal input markle_tree_elements[n];
     signal input markle_tree_elements_index[n];
-    signal input public tokenCommitment;
-    signal input public root;
-    signal input public nullifierHash; // double spendingを防ぐ。
+    signal input root;
+    signal input nullifierHash; // double spendingを防ぐ。
 
     signal secret;
     signal commitment;
@@ -113,10 +111,9 @@ template Withdraw(n) {
 
     // marke treeに追加するハッシュ化した情報
     generate_commitment.secret <== secret;
-    generate_commitment.nullifier <== nullifier;
     commitment <== generate_commitment.commitment;
 
-    component prove_element_membership = ProveElementMembership();
+    component prove_element_membership = ProveElementMembership(n);
     prove_element_membership.element <== commitment;
 
     for (var i = 0; i < n; i++) {
@@ -131,3 +128,5 @@ template Withdraw(n) {
     nullifierHash === generate_nullifier_hash.nullifierHash;
 
 }
+
+component main {public [root,nullifierHash]} = Withdraw(4);
